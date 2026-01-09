@@ -90,8 +90,12 @@ function countdown() {
 # -----------------------------
 APP="StarRupture Dedicated Server"
 CT_NAME="starrupture"
-TEMPLATE="debian-12-standard_12.0-1_amd64.tar.zst"
 STEAMAPPID="3809400"
+TEMPLATE_STORAGE="$(pvesm status -content vztmpl | awk 'NR==2 {print $1}')"
+[[ -n "$TEMPLATE_STORAGE" ]] || die "No storage with vztmpl content found. Enable a storage for CT templates."
+TEMPLATE="$(pveam available --section system | awk '/debian-12-standard/ {print $2}' | tail -n 1)"
+[[ -n "$TEMPLATE" ]] || die "Could not find a Debian 12 template in pveam available list."
+
 
 CORES_DEFAULT="2"
 MEMORY_DEFAULT="4096"
@@ -140,14 +144,14 @@ function list_bridges() {
   ip -o link show | awk -F': ' '{print $2}' | grep -E '^vmbr[0-9]+' || true
 }
 
+
 function ensure_template() {
   section "Template"
   msg_info "Ensuring Debian 12 template exists..."
-  if ! pveam list local | grep -q "$TEMPLATE"; then
-    msg_warn "Template not found. Downloading..."
-    pveam update >/dev/null
-    pveam download local "$TEMPLATE" | indent
-  fi
+if ! pveam list "$TEMPLATE_STORAGE" | grep -q "$TEMPLATE"; then
+  pveam update >/dev/null
+  pveam download "$TEMPLATE_STORAGE" "$TEMPLATE"
+fi
   msg_ok "Template ready."
 }
 
@@ -173,7 +177,7 @@ function create_container() {
   local pass
   pass="$(openssl rand -base64 18)"
 
-  pct create "$ctid" "local:vztmpl/${TEMPLATE}" \
+  pct create "$CTID" "$TEMPLATE_STORAGE:vztmpl/$TEMPLATE" ...
     --hostname "$name" \
     --cores "$cores" \
     --memory "$mem" \

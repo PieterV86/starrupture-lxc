@@ -176,7 +176,7 @@ function create_container() {
   local pass
   pass="$(openssl rand -base64 18)"
 
-  pct create "$CTID" "$TEMPLATE_STORAGE:vztmpl/$TEMPLATE" ...
+  pct create "$ctid" "$TEMPLATE_STORAGE:vztmpl/$TEMPLATE" \
     --hostname "$name" \
     --cores "$cores" \
     --memory "$mem" \

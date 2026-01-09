@@ -176,7 +176,7 @@ function create_container() {
   local pass
   pass="$(openssl rand -base64 18)"
 
-  pct create "$CTID" "$TEMPLATE_STORAGE:vztmpl/$TEMPLATE" ...
+  pct create "$ctid" "$TEMPLATE_STORAGE:vztmpl/$TEMPLATE" \
     --hostname "$name" \
     --cores "$cores" \
     --memory "$mem" \
@@ -243,8 +243,8 @@ function provision_container() {
     set -e
     export DEBIAN_FRONTEND=noninteractive
     dpkg --add-architecture i386
-    apt-get update
-    apt-get install -y --no-install-recommends \
+    apt-get -o Acquire::ForceIPv4=true update
+    apt-get -o Acquire::ForceIPv4=true install -y --no-install-recommends \
       ca-certificates curl tar bash \
       xvfb xauth x11-xserver-utils \
       wine wine32 wine64 \

@@ -91,10 +91,9 @@ function countdown() {
 APP="StarRupture Dedicated Server"
 CT_NAME="starrupture"
 STEAMAPPID="3809400"
-TEMPLATE_STORAGE="$(pvesm status -content vztmpl | awk 'NR==2 {print $1}')"
-[[ -n "$TEMPLATE_STORAGE" ]] || die "No storage with vztmpl content found. Enable a storage for CT templates."
-TEMPLATE="$(pveam available --section system | awk '/debian-12-standard/ {print $2}' | tail -n 1)"
-[[ -n "$TEMPLATE" ]] || die "Could not find a Debian 12 template in pveam available list."
+TEMPLATE_STORAGE="$(pvesm status -content vztmpl | awk 'NR==2 {print $1}' | tr -d '\r' | xargs)"
+TEMPLATE="$(pveam available --section system | awk '/debian-12-standard/ {print $2}' | tail -n 1 | tr -d '\r' | xargs)"
+OSTEMPLATE="${TEMPLATE_STORAGE}:vztmpl/${TEMPLATE}"
 
 
 CORES_DEFAULT="2"

@@ -96,9 +96,9 @@ TEMPLATE="$(pveam available --section system | awk '/debian-12-standard/ {print 
 OSTEMPLATE="${TEMPLATE_STORAGE}:vztmpl/${TEMPLATE}"
 
 
-CORES_DEFAULT="2"
-MEMORY_DEFAULT="4096"
-DISK_DEFAULT="16"
+CORES_DEFAULT="4"
+MEMORY_DEFAULT="8096"
+DISK_DEFAULT="40"
 
 # Host storage paths
 HOST_BASE="/srv/starrupture"
@@ -479,7 +479,7 @@ if [[ "$MODE" == "1" ]]; then
   # Static IP required
   SERVER_IP="$(ask "Server bind IP (multihome)" "$SERVER_IP_DEFAULT")"
   IP_CIDR="$(ask "Static IP CIDR (e.g. 192.168.1.208/24)" "${SERVER_IP}/24")"
-  GW="$(ask "Gateway (e.g. 192.168.1.1)" "192.168.1.1")"
+  GW="$(ask "Gateway (e.g. 192.168.1.254)" "192.168.1.254")"
 
 else
   # Repair mode

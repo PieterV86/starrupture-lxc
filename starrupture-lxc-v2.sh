@@ -199,6 +199,9 @@ function add_mounts() {
   section "Storage Mounts"
   msg_info "Creating persistent host directories..."
   mkdir -p "$HOST_SERVER" "$HOST_SAVE"
+  # Fix permissions for unprivileged containers (default Proxmox idmap)
+  chown -R 100000:100000 "$HOST_BASE"
+  chmod -R u+rwX,g+rwX,o-rwx "$HOST_BASE"
   msg_ok "Host dirs ensured:"
   echo "  $HOST_SERVER"
   echo "  $HOST_SAVE"
